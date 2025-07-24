@@ -1,8 +1,15 @@
 import { Router } from "express";
-import { createBlog, getAllBlogs } from "../controllers/blog.controller";
+import {
+	createBlog,
+	getAllBlogs,
+	updateBlog,
+} from "../controllers/blog.controller";
 import { authenticateJWT } from "../middlewares/auth.middleware";
 import { uploadImage } from "../middlewares/upload.middleware";
-import { validateBlogPost } from "../middlewares/validation.middleware";
+import {
+	validateBlogPatch,
+	validateBlogPost,
+} from "../middlewares/validation.middleware";
 
 const router = Router();
 
@@ -14,6 +21,14 @@ router.post(
 	uploadImage.single("image"),
 	validateBlogPost,
 	createBlog,
+);
+
+router.put(
+	"/blogs/:id",
+	authenticateJWT,
+	uploadImage.single("image"),
+	validateBlogPatch,
+	updateBlog,
 );
 
 export default router;
