@@ -6,7 +6,11 @@ import { LoginContext } from "../../contexts/LoginContext";
 import "react-toastify/dist/ReactToastify.css";
 import "./BlogCreateForm.css";
 
-const BlogCreateForm = () => {
+interface BlogCreateFormProps {
+	onSuccess: () => void;
+}
+
+const BlogCreateForm: React.FC<BlogCreateFormProps> = ({ onSuccess }) => {
 	const { isAdmin } = useContext(LoginContext);
 	const [title, setTitle] = useState("");
 	const [content, setContent] = useState("");
@@ -36,6 +40,7 @@ const BlogCreateForm = () => {
 			setTitle("");
 			setContent("");
 			setImage(null);
+			onSuccess(); // ✅ ferme le formulaire + recharge la liste
 		} catch (err) {
 			console.error(err);
 			toast.error("Erreur lors de la création de l'article.");
@@ -50,7 +55,7 @@ const BlogCreateForm = () => {
 				type="file"
 				accept="image/*"
 				onChange={(e) => {
-					if (e.target.files) setImage(e.target.files[0]);
+					if (e.target.files?.[0]) setImage(e.target.files[0]);
 				}}
 			/>
 
