@@ -1,9 +1,12 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
 import BlogCard from "../../components/BlogCard/BlogCard";
+import ConfirmDeleteModal from "../../components/BlogCard/ConfirmDeleteModal";
 import { LoginContext } from "../../contexts/LoginContext";
 import BlogCreateForm from "./BlogCreateForm";
 import BlogEditForm from "./BlogEditForm";
+import "react-toastify/dist/ReactToastify.css";
 import "./BlogPage.css";
 
 export interface BlogArticle {
@@ -22,6 +25,7 @@ const BlogPage = () => {
 	const [selectedArticle, setSelectedArticle] = useState<BlogArticle | null>(
 		null,
 	);
+	const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
 	const { isAdmin } = useContext(LoginContext);
 
 	// Récupération des articles
@@ -59,13 +63,41 @@ const BlogPage = () => {
 		setShowEditForm(true);
 	};
 
+	const handleDeleteClick = (id: number) => {
+		setConfirmDeleteId(id); // Affiche la modale
+	};
+
+	const handleConfirmDelete = async () => {
+		if (confirmDeleteId === null) return;
+
+		try {
+			await axios.delete(`http://localhost:3000/api/blogs/${confirmDeleteId}`, {
+				withCredentials: true,
+			});
+			toast.success("Article supprimé.");
+			fetchArticles().catch(console.error);
+		} catch (error) {
+			console.error("Erreur suppression :", error);
+			toast.error("Erreur lors de la suppression.");
+		} finally {
+			setConfirmDeleteId(null);
+		}
+	};
+
 	return (
 		<main className="blog-page">
+			<ToastContainer
+				position="bottom-center"
+				autoClose={2500}
+				aria-label="Notifications toast"
+			/>
+
 			{articles.map((article) => (
 				<BlogCard
 					key={article.id}
 					article={article}
 					onEdit={() => handleEditClick(article)}
+					onDelete={handleDeleteClick}
 				/>
 			))}
 
@@ -126,6 +158,14 @@ const BlogPage = () => {
 								</button>
 							</div>
 						</div>
+					)}
+
+					{/* Modale de confirmation suppression */}
+					{confirmDeleteId !== null && (
+						<ConfirmDeleteModal
+							onConfirm={handleConfirmDelete}
+							onCancel={() => setConfirmDeleteId(null)}
+						/>
 					)}
 				</>
 			)}

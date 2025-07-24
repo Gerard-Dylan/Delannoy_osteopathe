@@ -1,4 +1,7 @@
-import type { Express } from "express";
+import fs from "fs";
+import path from "path";
+import type { RowDataPacket } from "mysql2";
+import { pool } from "../config/db";
 import type { BlogWithImage } from "../models/blog.model";
 import {
 	findAllWithImage,
@@ -68,4 +71,38 @@ export const updateBlog = async (
 	}
 
 	await updateBlogPartialInDb(id_blog, data);
+};
+
+// Suppression d’un article + image liée
+export const deleteBlog = async (id_blog: number): Promise<void> => {
+	const conn = await pool.getConnection();
+	try {
+		await conn.beginTransaction();
+
+		// Récupérer les chemins des images
+		const [images] = await conn.query<RowDataPacket[]>(
+			"SELECT path FROM image WHERE id_blog = ?",
+			[id_blog],
+		);
+
+		for (const img of images) {
+			const imgPath = path.join(__dirname, "../../public", img.path);
+			if (fs.existsSync(imgPath)) {
+				fs.unlinkSync(imgPath);
+			}
+		}
+
+		// Supprimer d'abord les entrées dans la table image
+		await conn.query("DELETE FROM image WHERE id_blog = ?", [id_blog]);
+
+		// Supprimer l’article
+		await conn.query("DELETE FROM blog WHERE id_blog = ?", [id_blog]);
+
+		await conn.commit();
+	} catch (err) {
+		await conn.rollback();
+		throw err;
+	} finally {
+		conn.release();
+	}
 };
