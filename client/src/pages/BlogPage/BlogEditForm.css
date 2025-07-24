@@ -1,29 +1,30 @@
-.blog-create-form {
+.blog-edit-form {
 	display: flex;
 	flex-direction: column;
 	gap: 1rem;
 	padding: 1.5rem;
 	margin: 1rem auto;
+	width: 100%;
 	max-width: 32rem;
 	border: 1px solid #ccc;
 	border-radius: 0.75rem;
 	background-color: #fff;
 	box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
 	font-family: system-ui, sans-serif;
+	box-sizing: border-box;
 	user-select: text;
 	pointer-events: auto;
-	box-sizing: border-box;
 }
 
-.blog-create-form h2 {
+.blog-edit-form h2 {
 	font-size: 1.25rem;
 	text-align: center;
 	margin: 0;
 }
 
-.blog-create-form input[type="file"],
-.blog-create-form input[type="text"],
-.blog-create-form textarea {
+.blog-edit-form input[type="file"],
+.blog-edit-form input[type="text"],
+.blog-edit-form textarea {
 	width: 100%;
 	box-sizing: border-box;
 	padding: 0.75rem;
@@ -35,24 +36,39 @@
 	pointer-events: auto;
 }
 
-.blog-create-form textarea {
+.blog-edit-form textarea {
 	resize: vertical;
 	min-height: 6rem;
 	max-height: 20rem;
 }
 
-.blog-create-form button {
-	width: 100%;
+.blog-edit-form .form-actions {
+	display: flex;
+	gap: 1rem;
+}
+
+.blog-edit-form .form-actions button {
+	flex: 1;
 	padding: 0.75rem;
-	background-color: #3f8cff;
-	color: #fff;
 	font-weight: 600;
-	border: none;
 	border-radius: 0.5rem;
 	cursor: pointer;
+	border: none;
+}
+
+/* Bouton Valider */
+.blog-edit-form .form-actions button[type="submit"] {
+	background-color: #3f8cff;
+	color: #fff;
 	transition: background-color 0.2s ease-in-out;
 }
 
-.blog-create-form button:hover {
+.blog-edit-form .form-actions button[type="submit"]:hover {
 	background-color: #2e6fd8;
+}
+
+/* Bouton Annuler */
+.blog-edit-form .form-actions button[type="button"] {
+	background-color: #eee;
+	color: #333;
 }

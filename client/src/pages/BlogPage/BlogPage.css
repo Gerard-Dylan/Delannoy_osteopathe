@@ -5,6 +5,7 @@
 	align-items: center;
 }
 
+/* Bouton d'ajout */
 .add-article-btn {
 	margin: 2rem 0 1rem;
 	padding: 0.75rem 1.5rem;
@@ -26,7 +27,8 @@
 
 .add-article-btn:focus-visible,
 .modal-close-btn:focus-visible,
-.blog-create-form button:focus-visible {
+.blog-create-form button:focus-visible,
+.blog-edit-form button:focus-visible {
 	outline: 2px solid #005f40;
 	outline-offset: 2px;
 }
@@ -41,9 +43,10 @@
 	justify-content: center;
 	z-index: 999;
 	animation: fadeIn 0.3s ease-in-out;
+	pointer-events: auto;
+	touch-action: none;
 }
 
-/* Contenu modale */
 .modal-content {
 	background-color: #ffffff;
 	padding: 1.5rem;
@@ -53,8 +56,11 @@
 	position: relative;
 	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
 	animation: scaleIn 0.2s ease;
+	pointer-events: auto;
+	user-select: text;
 }
 
+/* Bouton fermeture modale */
 .modal-close-btn {
 	position: absolute;
 	top: 0.75rem;

@@ -11,9 +11,11 @@ interface BlogCardProps {
 		image: string | null;
 		alt: string;
 	};
+	onEdit?: (article: BlogCardProps["article"]) => void;
+	onDelete?: (id: number) => void;
 }
 
-function BlogCard({ article }: BlogCardProps) {
+function BlogCard({ article, onEdit, onDelete }: BlogCardProps) {
 	const { isAdmin } = useContext(LoginContext);
 	const [expanded, setExpanded] = useState(false);
 
@@ -24,7 +26,7 @@ function BlogCard({ article }: BlogCardProps) {
 			{article.image && (
 				<img
 					src={`http://localhost:3000${article.image}`}
-					alt={article.alt}
+					alt={article.alt || "Illustration de l'article"}
 					className="blog-card-image"
 				/>
 			)}
@@ -41,7 +43,11 @@ function BlogCard({ article }: BlogCardProps) {
 				</p>
 
 				{article.content.length > 350 && (
-					<button className="see-more" onClick={toggleExpanded}>
+					<button
+						className="see-more"
+						onClick={toggleExpanded}
+						aria-expanded={expanded}
+					>
 						{expanded ? "Voir moins" : "Voir plus"}
 					</button>
 				)}
@@ -53,8 +59,20 @@ function BlogCard({ article }: BlogCardProps) {
 
 			{isAdmin && (
 				<div className="admin-actions">
-					<button>Modifier</button>
-					<button>Supprimer</button>
+					<button
+						className="edit-btn"
+						onClick={() => onEdit?.(article)}
+						aria-label={`Modifier l'article ${article.title}`}
+					>
+						✏ Modifier
+					</button>
+					<button
+						className="delete-btn"
+						onClick={() => onDelete?.(article.id)}
+						aria-label={`Supprimer l'article ${article.title}`}
+					>
+						🗑 Supprimer
+					</button>
 				</div>
 			)}
 		</article>
