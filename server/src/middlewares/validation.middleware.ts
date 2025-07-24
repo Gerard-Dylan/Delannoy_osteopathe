@@ -29,3 +29,17 @@ export const validateBlogPatch = (
 
 	next();
 };
+
+export const validateBlogDelete = (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+) => {
+	const { id } = req.params;
+
+	if (!id || isNaN(Number(id))) {
+		return res.status(400).json({ message: "ID d'article invalide." });
+	}
+
+	next();
+};
