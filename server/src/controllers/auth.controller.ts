@@ -3,14 +3,14 @@ import type { Request, Response } from "express";
 import { getUserByEmail } from "../models/user.model";
 import { generateToken } from "../services/jwt.service";
 
-// Type personnalisé pour req.auth injecté par le middlewares
+// req.auth injecté par le middlewares
 interface RequestWithAuth extends Request {
 	auth?: {
 		id_user: number;
 	};
 }
 
-// Connexion de l’admin
+// connexionn de l’admin
 export async function loginAdmin(req: Request, res: Response) {
 	const { email, password } = req.body;
 
@@ -37,7 +37,7 @@ export async function loginAdmin(req: Request, res: Response) {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === "production",
 			sameSite: "strict",
-			maxAge: 1000 * 60 * 60 * 2, // 2h
+			maxAge: 1000 * 60 * 60 * 2,
 		});
 
 		return res.status(200).json({ message: "Connexion réussie" });
@@ -47,7 +47,7 @@ export async function loginAdmin(req: Request, res: Response) {
 	}
 }
 
-//  Récupération du profil
+//  récupération du profil
 export function getProfile(req: RequestWithAuth, res: Response) {
 	if (!req.auth?.id_user) {
 		return res.status(401).json({ error: "Non authentifié" });
