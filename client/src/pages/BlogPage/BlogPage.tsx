@@ -3,9 +3,10 @@ import { useContext, useEffect, useState } from "react";
 import BlogCard from "../../components/BlogCard/BlogCard";
 import { LoginContext } from "../../contexts/LoginContext";
 import BlogCreateForm from "./BlogCreateForm";
+import BlogEditForm from "./BlogEditForm";
 import "./BlogPage.css";
 
-interface BlogArticle {
+export interface BlogArticle {
 	id: number;
 	title: string;
 	content: string;
@@ -16,15 +17,21 @@ interface BlogArticle {
 
 const BlogPage = () => {
 	const [articles, setArticles] = useState<BlogArticle[]>([]);
-	const [showForm, setShowForm] = useState(false);
+	const [showCreateForm, setShowCreateForm] = useState(false);
+	const [showEditForm, setShowEditForm] = useState(false);
+	const [selectedArticle, setSelectedArticle] = useState<BlogArticle | null>(
+		null,
+	);
 	const { isAdmin } = useContext(LoginContext);
 
-	// récup des articles depuis l'API
+	// Récupération des articles
 	const fetchArticles = async () => {
 		try {
 			const res = await axios.get<BlogArticle[]>(
 				"http://localhost:3000/api/blogs",
-				{ withCredentials: true },
+				{
+					withCredentials: true,
+				},
 			);
 			setArticles(res.data);
 		} catch (err) {
@@ -36,37 +43,84 @@ const BlogPage = () => {
 		fetchArticles().catch(console.error);
 	}, []);
 
-	// ferme la modale popup + recharge les articles
 	const handleArticleCreated = () => {
-		setShowForm(false);
+		setShowCreateForm(false);
 		fetchArticles().catch(console.error);
+	};
+
+	const handleArticleUpdated = () => {
+		setShowEditForm(false);
+		setSelectedArticle(null);
+		fetchArticles().catch(console.error);
+	};
+
+	const handleEditClick = (article: BlogArticle) => {
+		setSelectedArticle(article);
+		setShowEditForm(true);
 	};
 
 	return (
 		<main className="blog-page">
-			{/* cartes d'articles */}
 			{articles.map((article) => (
-				<BlogCard key={article.id} article={article} />
+				<BlogCard
+					key={article.id}
+					article={article}
+					onEdit={() => handleEditClick(article)}
+				/>
 			))}
 
-			{/* bouton en bas (admin uniquement) */}
 			{isAdmin && (
 				<>
-					<button className="add-article-btn" onClick={() => setShowForm(true)}>
+					<button
+						className="add-article-btn"
+						onClick={() => setShowCreateForm(true)}
+					>
 						Ajouter un article
 					</button>
 
-					{showForm && (
-						<div className="modal-overlay" onClick={() => setShowForm(false)}>
+					{/* Formulaire de création */}
+					{showCreateForm && (
+						<div
+							className="modal-overlay"
+							onClick={(e) => {
+								if (e.target === e.currentTarget) setShowCreateForm(false);
+							}}
+						>
 							<div
 								className="modal-content"
 								onClick={(e) => e.stopPropagation()}
 							>
 								<BlogCreateForm onSuccess={handleArticleCreated} />
-
 								<button
 									className="modal-close-btn"
-									onClick={() => setShowForm(false)}
+									onClick={() => setShowCreateForm(false)}
+								>
+									X
+								</button>
+							</div>
+						</div>
+					)}
+
+					{/* Formulaire de modification */}
+					{showEditForm && selectedArticle && (
+						<div
+							className="modal-overlay"
+							onClick={(e) => {
+								if (e.target === e.currentTarget) setShowEditForm(false);
+							}}
+						>
+							<div
+								className="modal-content"
+								onClick={(e) => e.stopPropagation()}
+							>
+								<BlogEditForm
+									article={selectedArticle}
+									onSuccess={handleArticleUpdated}
+									onCancel={() => setShowEditForm(false)}
+								/>
+								<button
+									className="modal-close-btn"
+									onClick={() => setShowEditForm(false)}
 								>
 									X
 								</button>
