@@ -1,4 +1,6 @@
-import { useContext, useState } from "react";
+// src/components/Navbar/Navbar.tsx
+
+import { useContext, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/images/logo-osteo.png";
 import { LoginContext } from "../../contexts/LoginContext";
@@ -8,11 +10,31 @@ function Navbar() {
 	const [menuOpen, setMenuOpen] = useState(false);
 	const { isAdmin, logout } = useContext(LoginContext);
 	const navigate = useNavigate();
+	const menuRef = useRef<HTMLDivElement>(null); // 🔁 Référence pour clic en dehors
 
+	// Déconnexion admin
 	const handleLogout = () => {
 		logout();
-		navigate("/");
+		navigate("/blog");
 	};
+
+	// Ferme le menu si clic en dehors
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (
+				menuOpen &&
+				menuRef.current &&
+				!menuRef.current.contains(event.target as Node)
+			) {
+				setMenuOpen(false);
+			}
+		};
+
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, [menuOpen]);
 
 	return (
 		<header className="navbar">
@@ -31,7 +53,7 @@ function Navbar() {
 				☰
 			</button>
 
-			<nav className={`navbar-menu ${menuOpen ? "open" : ""}`}>
+			<nav className={`navbar-menu ${menuOpen ? "open" : ""}`} ref={menuRef}>
 				<ul>
 					<li>
 						<Link to="/">Accueil</Link>
