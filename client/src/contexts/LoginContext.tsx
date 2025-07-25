@@ -9,12 +9,14 @@ interface LoginContextProps {
 	user: User | null;
 	setUser: (user: User | null) => void;
 	isAdmin: boolean;
+	logout: () => void;
 }
 
 export const LoginContext = createContext<LoginContextProps>({
 	user: null,
 	setUser: () => {},
 	isAdmin: false,
+	logout: () => {},
 });
 
 export function LoginProvider({ children }: { children: ReactNode }) {
@@ -33,8 +35,16 @@ export function LoginProvider({ children }: { children: ReactNode }) {
 			});
 	}, []);
 
+	const logout = () => {
+		axios
+			.post("/api/connexion/logout", {}, { withCredentials: true })
+			.finally(() => {
+				setUser(null);
+			});
+	};
+
 	return (
-		<LoginContext.Provider value={{ user, setUser, isAdmin }}>
+		<LoginContext.Provider value={{ user, setUser, isAdmin, logout }}>
 			{children}
 		</LoginContext.Provider>
 	);
