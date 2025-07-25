@@ -1,0 +1,88 @@
+.blog-card {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	border: 1px solid #ddd;
+	border-radius: 0.75rem;
+	padding: 1rem;
+	margin-bottom: 1rem;
+	background-color: #fff;
+	max-width: 100%;
+	box-sizing: border-box;
+	user-select: text;
+}
+
+.blog-card-image {
+	width: 100%;
+	max-width: 100%; /* ✅ empêche toute image trop large */
+	height: auto;
+	border-radius: 0.5rem;
+	object-fit: cover;
+	display: block;
+}
+
+.blog-card-title {
+	font-size: 1.2rem;
+	font-weight: bold;
+	margin: 0;
+}
+
+.blog-card-date {
+	font-size: 0.85rem;
+	color: #666;
+}
+
+.blog-card-content-text {
+	font-size: 0.95rem;
+	color: #333;
+	white-space: pre-line;
+	transition: max-height 0.3s ease;
+	overflow: hidden;
+	word-wrap: break-word;
+	word-break: break-word;
+}
+
+.truncated {
+	display: -webkit-box;
+	-webkit-line-clamp: 8;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+.see-more {
+	margin-top: 0.5rem;
+	background: none;
+	border: none;
+	color: #0077cc;
+	font-size: 0.9rem;
+	cursor: pointer;
+	text-decoration: underline;
+	padding: 0;
+}
+
+.admin-actions {
+	display: flex;
+	gap: 0.5rem;
+	margin-top: 0.5rem;
+}
+
+.admin-actions button {
+	padding: 0.5rem 1rem;
+	background-color: #3c9;
+	color: #fff;
+	border: none;
+	border-radius: 0.5rem;
+	cursor: pointer;
+	font-weight: bold;
+	transition: background-color 0.3s ease;
+	white-space: nowrap;
+}
+
+.admin-actions button:hover {
+	background-color: #34b28c;
+}
+
+.admin-actions button:focus-visible {
+	outline: 2px solid #222;
+	outline-offset: 2px;
+}
